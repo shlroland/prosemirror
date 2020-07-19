@@ -32,6 +32,7 @@ function start() {
   let cmdFn = {
     "status": status,
     "commit": commit,
+    "beforecommit": beforecommit,
     "install": install,
     "build": build,
     "test": test,
@@ -99,12 +100,17 @@ function run(cmd, args, pkg) {
 function status() {
   modsAndWebsite.forEach(repo => {
     let output = run("git", ["status", "-sb"], repo)
+    // NOTE:模块没有变动，output 会是只有一行：## master...origin/master
+    //  如果有变动，则会是：
+    //    ## master...origin/master
+    //    M src/index.js
     if (output != "## master...origin/master\n")
       console.log(repo + ":\n" + run("git", ["status"], repo))
   })
 }
 
 function commit(...args) {
+  beforecommit();
   modsAndWebsite.forEach(repo => {
     if (run("git", ["diff"], repo) || run("git", ["diff", "--cached"], repo))
       console.log(repo + ":\n" + run("git", ["commit"].concat(args), repo))
@@ -153,10 +159,25 @@ function test(...args) {
 }
 
 function push() {
+  let update = false;
+  let updateInfo = [];
   modsAndWebsite.forEach(repo => {
-    if (/\bahead\b/.test(run("git", ["status", "-sb"], repo)))
+    let output = run("git", ["status", "-sb"], repo)
+    if (/\bahead\b/.test(output)) {
+      if (output !== "## master...origin/master\n") {
+        update = true;
+        updateInfo.push(repo);
+      }
       run("git", ["push"], repo)
+    }
   })
+  if (update) {
+    // NOTE：在根目录也 push 一次
+    console.log('updateInfo.toString():', updateInfo.toString());
+    run("git", ["add", '.']);
+    run("git", ["commit", "-m", updateInfo.toString()], './');
+    run("git", ["push"]);
+  }
 }
 
 function pull() {
