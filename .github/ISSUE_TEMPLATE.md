@@ -1,9 +1,19 @@
+<!-- 也许来个 PR 更直接？-->
+
 <!--
-
-Please provide:
-
- - Necessary steps to reproduce the issue. If the editor has to be set up in a specific way, running code (minimal code, not a dump of your project) is very useful.
-
- - If this might be browser-related, tell us the browsers and platforms you tested on.
-
+写上列上错误的简写仓库名、文件、出错行数及正确的翻译，如下示例：
+#### 仓库名：view：src/index.js:257
+  * 错误：`翻译挫误`
+  * 正确：`翻译错误`
+#### 仓库名：state：src/index.js:567
+  * 错误：
+  * 正确：
 -->
+
+#### 仓库名：
+  * 错误：
+  * 正确：
+
+#### 仓库名：
+  * 错误：
+  * 正确：
